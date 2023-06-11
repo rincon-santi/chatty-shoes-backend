@@ -139,7 +139,7 @@ def _execute_command(message, conversation_id):
             args[key] = value
     # Call the command handling function and return its response
     response_text = _make_authorized_post_request(COMMANDS_ENDPOINT, 
-                                                  json.dumps(**args).encode("utf-8"))["responseMessage"]
+                                                  json.dumps(args).encode("utf-8"))["responseMessage"]
     # Return the response message
     return response_text
 
@@ -173,13 +173,19 @@ def _is_command(message):
 
 def _conversational_bot(event):
     logging.info("Processing event {}".format(event))
+    if not "role" in event.keys():
+        event["role"] = "user"
     if event["role"] == "user":
-        message = event["message"]
-        conversation_id = event["conversationId"]
-        user_id = event["author"]
+        message = str(event["message"])
+        conversation_id = str(event["conversationId"])
+        user_id = str(event["author"])
         # Get the conversation information
         if conversation_id != "temp":
-            conversation_info = _get_conversation_info(conversation_id)
+            try:
+                conversation_info = _get_conversation_info(conversation_id)
+            except:
+                response = {"error": "Error fetching conversation"}
+                return Flask.response_class(json.dumps(response), status=400, mimetype="application/json")
             # Check if the user is allowed to continue the conversation
             if user_id not in [conversation_info["user"], "command-executor"]:
                 logging.error("User not allowed to continue conversation")
