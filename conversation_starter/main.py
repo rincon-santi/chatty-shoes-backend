@@ -14,7 +14,16 @@ def conversation_start(request):
     This function starts a conversation.
     Parameters:
         request: The HTTP request.
-    """
+    """  
+    if request.method == 'OPTIONS':
+        logging.info("Received options request")
+        # Preflight request. Reply successfully:
+        response = make_response()
+        response.headers.set('Access-Control-Allow-Origin', '*')  # Adjust this to allow specific origins
+        response.headers.set('Access-Control-Allow-Methods', 'POST')
+        response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        response.headers.set('Access-Control-Max-Age', '3600')
+        return response
     # Get the conversation ID from the request body
     conversation_id = request.json.get('conversation_id')
     # Get the model codename from the request body
