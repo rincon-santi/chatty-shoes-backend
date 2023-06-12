@@ -43,7 +43,7 @@ def conversation_start(request):
     # Get the user ID from the request body if exists
     user = str(request.json.get('user'))
     
-    country_code = str(request.json.get('user', 'UK'))
+    country_code = str(request.json.get('countryCode', 'UK'))
     # Prepare prompt for language model
     messages = [
         {"role": "system", "content": "Act as a language identifier. You will be prompted with a country code and you will answer greeting the user in the corresponding language"},
