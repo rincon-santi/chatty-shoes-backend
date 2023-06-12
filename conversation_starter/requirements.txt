@@ -2,3 +2,4 @@ firebase-admin
 functions-framework
 requests
 google-auth
+openai
